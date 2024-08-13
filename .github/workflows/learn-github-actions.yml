@@ -46,4 +46,4 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://gcr.io/cadvisor/cadvisor docker://registry.cn-hangzhou.aliyuncs.com/kkun/cadvisor
+        skopeo copy --all docker://anmour/bncr docker://registry.cn-hangzhou.aliyuncs.com/kkun/bncr
