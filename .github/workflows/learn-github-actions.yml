@@ -46,4 +46,4 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://anmour/bncr docker://registry.cn-hangzhou.aliyuncs.com/kkun/bncr
+        skopeo copy --all docker://ht944/rabbitpro docker://registry.cn-hangzhou.aliyuncs.com/kkun/rabbitpro
