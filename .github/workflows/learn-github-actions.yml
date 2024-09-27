@@ -46,4 +46,4 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://jxxghp/moviepilot docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot
+        skopeo copy --all docker://image docker://registry.cn-hangzhou.aliyuncs.com/kkun/image
