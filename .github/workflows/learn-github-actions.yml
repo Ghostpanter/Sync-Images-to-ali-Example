@@ -46,4 +46,4 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://sitoi/dailycheckin docker://registry.cn-hangzhou.aliyuncs.com/kkun/dailycheckin
+        skopeo copy --all docker://hanxi/xiaomusic docker://registry.cn-hangzhou.aliyuncs.com/kkun/xiaomusic
