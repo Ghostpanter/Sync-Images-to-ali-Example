@@ -46,4 +46,4 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://corentinth/it-tools docker://registry.cn-hangzhou.aliyuncs.com/kkun/it-tools
+        skopeo copy --all docker://sitoi/dailycheckin docker://registry.cn-hangzhou.aliyuncs.com/kkun/dailycheckin
