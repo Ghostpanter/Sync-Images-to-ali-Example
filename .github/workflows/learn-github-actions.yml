@@ -46,4 +46,4 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://quay.io/prometheus/prometheus docker://registry.cn-hangzhou.aliyuncs.com/kkun/prometheus
+        skopeo copy --all docker://corentinth/it-tools docker://registry.cn-hangzhou.aliyuncs.com/kkun/it-tools
