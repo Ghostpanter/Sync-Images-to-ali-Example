@@ -46,20 +46,4 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://guovern/tv-requests docker://registry.cn-hangzhou.aliyuncs.com/kkun/tv-requests
-        skopeo copy --all docker://guovern/tv-requests docker://registry.cn-hangzhou.aliyuncs.com/kkun/tv-requests
-        skopeo copy --all docker://jxxghp/moviepilot docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot
-        skopeo copy --all docker://herberthe0229/iptv-sources docker://registry.cn-hangzhou.aliyuncs.com/kkun/iptv-sources
-        skopeo copy --all docker://alpine docker://registry.cn-hangzhou.aliyuncs.com/kkun/alpine
-        skopeo copy --all docker://nginx docker://registry.cn-hangzhou.aliyuncs.com/kkun/nginx
-        skopeo copy --all docker://whyour/qinglong docker://registry.cn-hangzhou.aliyuncs.com/kkun/qinglong
-        skopeo copy --all docker://xhofe/alist docker://registry.cn-hangzhou.aliyuncs.com/kkun/alist
-        skopeo copy --all docker://grafana/grafana docker://registry.cn-hangzhou.aliyuncs.com/kkun/grafana
-        skopeo copy --all docker://quay.io/prometheus/prometheus docker://registry.cn-hangzhou.aliyuncs.com/kkun/prometheus
-        skopeo copy --all docker://corentinth/it-tools docker://registry.cn-hangzhou.aliyuncs.com/kkun/it-tools
-        skopeo copy --all docker://sitoi/dailycheckin docker://registry.cn-hangzhou.aliyuncs.com/kkun/dailycheckin
-        skopeo copy --all docker://hanxi/xiaomusic docker://registry.cn-hangzhou.aliyuncs.com/kkun/xiaomusic
-        skopeo copy --all docker://cp0204/quark-auto-save docker://registry.cn-hangzhou.aliyuncs.com/kkun/quark-auto-save
-        skopeo copy --all docker://ht944/rabbitpro docker://registry.cn-hangzhou.aliyuncs.com/kkun/rabbitpro
-        skopeo copy --all docker://mysql docker://registry.cn-hangzhou.aliyuncs.com/kkun/mysql
-        skopeo copy --all docker://esanchezm/prometheus-qbittorrent-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/prometheus-qbittorrent-exporter
+        skopeo copy --all docker://jxxghp/moviepilot-v2 docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot-v2
