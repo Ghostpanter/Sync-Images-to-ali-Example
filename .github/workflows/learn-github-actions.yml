@@ -46,7 +46,7 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://redlou/autoupjdcookie:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/autoupjdcookie:latest
+        skopeo copy --all docker://redlou/autoupjdcookie docker://registry.cn-hangzhou.aliyuncs.com/kkun/autoupjdcookie
         skopeo copy --all docker://guovern/tv-requests docker://registry.cn-hangzhou.aliyuncs.com/kkun/tv-requests
         skopeo copy --all docker://jxxghp/moviepilot docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot
         skopeo copy --all docker://jxxghp/moviepilot-v2 docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot-v2
