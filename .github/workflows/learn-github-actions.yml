@@ -46,7 +46,6 @@ jobs:
         
         sudo apt update
         sudo apt install skopeo -y
-        skopeo copy --all docker://redlou/autoupjdcookie docker://registry.cn-hangzhou.aliyuncs.com/kkun/autoupjdcookie
         skopeo copy --all docker://guovern/tv-requests docker://registry.cn-hangzhou.aliyuncs.com/kkun/tv-requests
         skopeo copy --all docker://jxxghp/moviepilot docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot
         skopeo copy --all docker://jxxghp/moviepilot-v2 docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot-v2
@@ -65,3 +64,5 @@ jobs:
         skopeo copy --all docker://mysql docker://registry.cn-hangzhou.aliyuncs.com/kkun/mysql
         skopeo copy --all docker://esanchezm/prometheus-qbittorrent-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/prometheus-qbittorrent-exporter
         skopeo copy --all docker://linuxserver/chromium docker://registry.cn-hangzhou.aliyuncs.com/kkun/chromium
+        skopeo copy --all docker://redlou/autoupjdcookie docker://registry.cn-hangzhou.aliyuncs.com/kkun/autoupjdcookie
+        skopeo copy --all docker://anmour/bncr docker://registry.cn-hangzhou.aliyuncs.com/kkun/bncr
