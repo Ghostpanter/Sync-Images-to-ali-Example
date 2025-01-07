@@ -66,3 +66,5 @@ jobs:
         skopeo copy --all docker://linuxserver/chromium docker://registry.cn-hangzhou.aliyuncs.com/kkun/chromium
         skopeo copy --all docker://redlou/autoupjdcookie docker://registry.cn-hangzhou.aliyuncs.com/kkun/autoupjdcookie
         skopeo copy --all docker://anmour/bncr docker://registry.cn-hangzhou.aliyuncs.com/kkun/bncr
+        skopeo copy --all docker://mlikiowa/napcat-docker docker://registry.cn-hangzhou.aliyuncs.com/kkun/napcat-docker
+        skopeo copy --all docker://initialencounter/llonebot docker://registry.cn-hangzhou.aliyuncs.com/kkun/llonebot
