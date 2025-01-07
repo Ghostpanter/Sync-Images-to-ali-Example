@@ -45,6 +45,7 @@ jobs:
         curl -fsSL ${REPO_URL}/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/skopeo.gpg > /dev/null
         
         sudo apt update
+        sudo apt upgrade -y
         sudo apt install skopeo -y
         skopeo copy --all docker://guovern/tv-requests docker://registry.cn-hangzhou.aliyuncs.com/kkun/tv-requests
         skopeo copy --all docker://jxxghp/moviepilot docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot
