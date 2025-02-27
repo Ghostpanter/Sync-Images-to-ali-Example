@@ -70,3 +70,4 @@ jobs:
         skopeo copy --all docker://initialencounter/llonebot docker://registry.cn-hangzhou.aliyuncs.com/kkun/llonebot
         skopeo copy --all docker://koishijs/koishi docker://registry.cn-hangzhou.aliyuncs.com/kkun/koishi
         skopeo copy --all docker://linuxserver/msedge docker://registry.cn-hangzhou.aliyuncs.com/kkun/msedge
+        skopeo copy --all docker://jxxghp/moviepilot-ocr docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot-ocr
