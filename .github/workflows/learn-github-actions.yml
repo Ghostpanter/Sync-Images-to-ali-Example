@@ -72,3 +72,4 @@ jobs:
         skopeo copy --all docker://linuxserver/msedge docker://registry.cn-hangzhou.aliyuncs.com/kkun/msedge
         skopeo copy --all docker://python:3.9-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/python:3.9-slim
         skopeo copy --all docker://pbh-btn/peerbanhelper docker://registry.cn-hangzhou.aliyuncs.com/kkun/peerbanhelper
+        skopeo copy --all docker://leishi1313/downloader-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/downloader-exporter
