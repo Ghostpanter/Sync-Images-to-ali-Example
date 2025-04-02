@@ -73,4 +73,3 @@ jobs:
         skopeo copy --all docker://python:3.9-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/python:3.9-slim
         skopeo copy --all docker://leishi1313/downloader-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/downloader-exporter
         skopeo copy --all docker://ghostchu/peerbanhelper docker://registry.cn-hangzhou.aliyuncs.com/kkun/peerbanhelper
-        skopeo copy --all docker://xhongc/music_tag_web docker://registry.cn-hangzhou.aliyuncs.com/kkun/music_tag_web
