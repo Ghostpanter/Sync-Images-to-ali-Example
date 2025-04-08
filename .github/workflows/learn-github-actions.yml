@@ -77,4 +77,4 @@ jobs:
         skopeo copy --all docker://bitnami/zookeeper:3.7.1 docker://registry.cn-hangzhou.aliyuncs.com/kkun/zookeeper:3.7.1
         skopeo copy --all docker://signoz/signoz docker://registry.cn-hangzhou.aliyuncs.com/kkun/signoz
         skopeo copy --all docker://signoz/signoz-otel-collector docker://registry.cn-hangzhou.aliyuncs.com/kkun/signoz-otel-collector
-        skopeo copy --all docker://signoz/signoz-schema-migrator docker://registry.cn-hangzhou.aliyuncs.com/kkun/signoz-schema-migrator
+        skopeo copy --all docker://signoz/signoz-schema-migrator:main docker://registry.cn-hangzhou.aliyuncs.com/kkun/signoz-schema-migrator:main
