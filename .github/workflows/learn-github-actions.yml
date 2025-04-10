@@ -73,8 +73,5 @@ jobs:
         skopeo copy --all docker://python:3.9-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/python:3.9-slim
         skopeo copy --all docker://leishi1313/downloader-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/downloader-exporter
         skopeo copy --all docker://ghostchu/peerbanhelper docker://registry.cn-hangzhou.aliyuncs.com/kkun/peerbanhelper
-        skopeo copy --all docker://clickhouse/clickhouse-server:24.1.2-alpine docker://registry.cn-hangzhou.aliyuncs.com/kkun/clickhouse-server:24.1.2-alpine
-        skopeo copy --all docker://bitnami/zookeeper:3.7.1 docker://registry.cn-hangzhou.aliyuncs.com/kkun/zookeeper:3.7.1
-        skopeo copy --all docker://signoz/signoz docker://registry.cn-hangzhou.aliyuncs.com/kkun/signoz
-        skopeo copy --all docker://signoz/signoz-otel-collector docker://registry.cn-hangzhou.aliyuncs.com/kkun/signoz-otel-collector
-        skopeo copy --all docker://signoz/signoz-schema-migrator:main docker://registry.cn-hangzhou.aliyuncs.com/kkun/signoz-schema-migrator:main
+        skopeo copy --all docker://ghcr.io/linuxserver/unrar:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/unrar:latest
+        skopeo copy --all docker://ghcr.io/linuxserver/baseimage-alpine:edge docker://registry.cn-hangzhou.aliyuncs.com/kkun/baseimage-alpine:edge
