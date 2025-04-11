@@ -75,3 +75,5 @@ jobs:
         skopeo copy --all docker://ghostchu/peerbanhelper docker://registry.cn-hangzhou.aliyuncs.com/kkun/peerbanhelper
         skopeo copy --all docker://ghcr.io/linuxserver/unrar:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/unrar:latest
         skopeo copy --all docker://ghcr.io/linuxserver/baseimage-alpine:edge docker://registry.cn-hangzhou.aliyuncs.com/kkun/baseimage-alpine:edge
+        skopeo copy --all docker://phanan/koel docker://registry.cn-hangzhou.aliyuncs.com/kkun/koel
+        skopeo copy --all docker://mariadb:10.5 docker://registry.cn-hangzhou.aliyuncs.com/kkun/mariadb:10.5
