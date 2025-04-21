@@ -66,14 +66,9 @@ jobs:
         skopeo copy --all docker://linuxserver/chromium docker://registry.cn-hangzhou.aliyuncs.com/kkun/chromium
         skopeo copy --all docker://redlou/autoupjdcookie docker://registry.cn-hangzhou.aliyuncs.com/kkun/autoupjdcookie
         skopeo copy --all docker://anmour/bncr docker://registry.cn-hangzhou.aliyuncs.com/kkun/bncr
-        skopeo copy --all docker://mlikiowa/napcat-docker docker://registry.cn-hangzhou.aliyuncs.com/kkun/napcat-docker
         skopeo copy --all docker://initialencounter/llonebot docker://registry.cn-hangzhou.aliyuncs.com/kkun/llonebot
         skopeo copy --all docker://koishijs/koishi docker://registry.cn-hangzhou.aliyuncs.com/kkun/koishi
         skopeo copy --all docker://linuxserver/msedge docker://registry.cn-hangzhou.aliyuncs.com/kkun/msedge
         skopeo copy --all docker://python:3.9-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/python:3.9-slim
         skopeo copy --all docker://leishi1313/downloader-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/downloader-exporter
         skopeo copy --all docker://ghostchu/peerbanhelper docker://registry.cn-hangzhou.aliyuncs.com/kkun/peerbanhelper
-        skopeo copy --all docker://ghcr.io/linuxserver/unrar:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/unrar:latest
-        skopeo copy --all docker://ghcr.io/linuxserver/baseimage-alpine:edge docker://registry.cn-hangzhou.aliyuncs.com/kkun/baseimage-alpine:edge
-        skopeo copy --all docker://phanan/koel docker://registry.cn-hangzhou.aliyuncs.com/kkun/koel
-        skopeo copy --all docker://mariadb:10.5 docker://registry.cn-hangzhou.aliyuncs.com/kkun/mariadb:10.5
