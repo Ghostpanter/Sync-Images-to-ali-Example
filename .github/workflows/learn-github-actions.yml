@@ -73,3 +73,4 @@ jobs:
         skopeo copy --all docker://leishi1313/downloader-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/downloader-exporter
         skopeo copy --all docker://ghostchu/peerbanhelper docker://registry.cn-hangzhou.aliyuncs.com/kkun/peerbanhelper
         skopeo copy --all docker://debian:bullseye-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/debian:bullseye-slim
+        skopeo copy --all docker://rustdesk/rustdesk-server docker://registry.cn-hangzhou.aliyuncs.com/kkun/rustdesk-server
