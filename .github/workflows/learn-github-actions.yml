@@ -51,7 +51,7 @@ jobs:
         skopeo copy --all docker://jxxghp/moviepilot-v2 docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot-v2
         skopeo copy --all docker://herberthe0229/iptv-sources docker://registry.cn-hangzhou.aliyuncs.com/kkun/iptv-sources
         skopeo copy --all docker://alpine docker://registry.cn-hangzhou.aliyuncs.com/kkun/alpine
-        skopeo copy --all docker://nginx docker://registry.cn-hangzhou.aliyuncs.com/kkun/nginx
+        skopeo copy --all docker://nginx:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/nginx:latest
         skopeo copy --all docker://whyour/qinglong docker://registry.cn-hangzhou.aliyuncs.com/kkun/qinglong
         skopeo copy --all docker://xhofe/alist docker://registry.cn-hangzhou.aliyuncs.com/kkun/alist
         skopeo copy --all docker://grafana/grafana docker://registry.cn-hangzhou.aliyuncs.com/kkun/grafana
