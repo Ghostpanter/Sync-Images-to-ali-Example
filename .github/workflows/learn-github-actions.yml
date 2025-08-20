@@ -64,7 +64,6 @@ jobs:
         skopeo copy --all docker://mysql docker://registry.cn-hangzhou.aliyuncs.com/kkun/mysql
         skopeo copy --all docker://esanchezm/prometheus-qbittorrent-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/prometheus-qbittorrent-exporter
         skopeo copy --all docker://linuxserver/chromium docker://registry.cn-hangzhou.aliyuncs.com/kkun/chromium
-        skopeo copy --all docker://redlou/autoupjdcookie docker://registry.cn-hangzhou.aliyuncs.com/kkun/autoupjdcookie
         skopeo copy --all docker://anmour/bncr docker://registry.cn-hangzhou.aliyuncs.com/kkun/bncr
         skopeo copy --all docker://initialencounter/llonebot docker://registry.cn-hangzhou.aliyuncs.com/kkun/llonebot
         skopeo copy --all docker://koishijs/koishi docker://registry.cn-hangzhou.aliyuncs.com/kkun/koishi
