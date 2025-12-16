@@ -75,4 +75,5 @@ jobs:
         skopeo copy --all docker://rustdesk/rustdesk-server docker://registry.cn-hangzhou.aliyuncs.com/kkun/rustdesk-server
         skopeo copy --all docker://budtmo/docker-android:emulator_14.0 docker://registry.cn-hangzhou.aliyuncs.com/kkun/docker-android:emulator_14.0
         skopeo copy --all docker://ghcr.io/anduin2017/how-to-cook docker://registry.cn-hangzhou.aliyuncs.com/kkun/how-to-cook
+        skopeo copy --all docker://debian:stable-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/debian:stable-slim
         skopeo copy --all docker://qmmusic/qm-music docker://registry.cn-hangzhou.aliyuncs.com/kkun/qm-music
