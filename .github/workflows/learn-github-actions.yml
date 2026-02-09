@@ -77,3 +77,4 @@ jobs:
         skopeo copy --all docker://ghcr.io/anduin2017/how-to-cook docker://registry.cn-hangzhou.aliyuncs.com/kkun/how-to-cook
         skopeo copy --all docker://debian:stable-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/debian:stable-slim
         skopeo copy --all docker://qmmusic/qm-music docker://registry.cn-hangzhou.aliyuncs.com/kkun/qm-music
+        skopeo copy --all docker://foru17/clash-master docker://registry.cn-hangzhou.aliyuncs.com/kkun/clash-master
