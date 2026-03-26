@@ -77,7 +77,4 @@ jobs:
         skopeo copy --all docker://ghcr.io/anduin2017/how-to-cook docker://registry.cn-hangzhou.aliyuncs.com/kkun/how-to-cook
         skopeo copy --all docker://debian:stable-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/debian:stable-slim
         skopeo copy --all docker://qmmusic/qm-music docker://registry.cn-hangzhou.aliyuncs.com/kkun/qm-music
-        skopeo copy --all docker://ghcr.nju.edu.cn/miiot/miloco:main docker://registry.cn-hangzhou.aliyuncs.com/kkun/miloco:main
-        skopeo copy --all docker://ghcr.nju.edu.cn/alexxit/go2rtc docker://registry.cn-hangzhou.aliyuncs.com/kkun/go2rtc
-        skopeo copy --all docker://ghcr.nju.edu.cn/miiot/micam:main docker://registry.cn-hangzhou.aliyuncs.com/kkun/micam:main
         skopeo copy --all docker://ghcr.io/jarvis2f/telegram-files:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/telegram-files:latest
