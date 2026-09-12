@@ -22,6 +22,8 @@ on:
         description: "Concurrent copies inside one shard"
         default: "3"
         required: false
+  repository_dispatch:
+    types: [sync-images]
 
 jobs:
   plan:
@@ -32,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: split
         env:
-          SHARD_COUNT: ${{ github.event.inputs.shard_count || '3' }}
+          SHARD_COUNT: ${{ github.event.inputs.shard_count || github.event.client_payload.shard_count || '3' }}
         run: |
           python3 <<'PY'
           import json, os, pathlib
@@ -41,10 +43,9 @@ jobs:
               if raw.split("#", 1)[0].strip():
                   n += 1
           count = max(1, min(int(os.environ.get("SHARD_COUNT", "3")), n or 1))
-          shards = list(range(count))
           print(f"images={n} shards={count}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
-              f.write("shards=" + json.dumps(shards) + "\n")
+              f.write("shards=" + json.dumps(list(range(count))) + "\n")
           PY
 
   sync:
@@ -59,24 +60,20 @@ jobs:
     name: shard-${{ matrix.shard }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: docker/login-action@v3
         with:
           registry: registry.cn-hangzhou.aliyuncs.com
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Install skopeo
         run: |
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq skopeo jq
-          skopeo --version
-
       - name: Sync shard ${{ matrix.shard }}
         env:
           ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
           ACR_NAMESPACE: kkun
           SHARD_ID: ${{ matrix.shard }}
-          SHARD_COUNT: ${{ github.event.inputs.shard_count || '3' }}
-          PARALLEL: ${{ github.event.inputs.jobs_per_shard || '3' }}
+          SHARD_COUNT: ${{ github.event.inputs.shard_count || github.event.client_payload.shard_count || '3' }}
+          PARALLEL: ${{ github.event.inputs.jobs_per_shard || github.event.client_payload.jobs_per_shard || '3' }}
         run: bash scripts/sync-all.sh
