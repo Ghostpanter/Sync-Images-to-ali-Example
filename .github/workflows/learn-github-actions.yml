@@ -4,63 +4,82 @@ run-name: ${{ github.actor }} is Sync Images to ali.
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - image.txt
+      - .github/workflows/learn-github-actions.yml
+      - scripts/sync-one.sh
   workflow_dispatch:
 
 jobs:
-  syncimages:
+  plan:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.split.outputs.matrix }}
     steps:
-    - name: Checkout Repos
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - id: split
+        env:
+          CHUNK_SIZE: "8"
+        run: |
+          python3 <<'PY'
+          import json, os, pathlib
+          lines = []
+          for raw in pathlib.Path("image.txt").read_text(encoding="utf-8").splitlines():
+              line = raw.split("#", 1)[0].strip()
+              if line:
+                  lines.append(line)
+          size = int(os.environ.get("CHUNK_SIZE", "8"))
+          chunks = [lines[i:i + size] for i in range(0, len(lines), size)] or [[]]
+          print(f"images={len(lines)} chunks={len(chunks)} size={size}")
+          matrix = [{"id": i, "images": c} for i, c in enumerate(chunks)]
+          out = os.environ["GITHUB_OUTPUT"]
+          with open(out, "a", encoding="utf-8") as f:
+              f.write("matrix=")
+              f.write(json.dumps(matrix, ensure_ascii=False))
+              f.write("\n")
+          PY
 
-    - name: Login to Alibaba Cloud Container Registry
-      env:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-      run: |
-        echo "$password" | docker login --username="$username" --password-stdin registry.cn-hangzhou.aliyuncs.com
+  syncimages:
+    needs: plan
+    if: ${{ needs.plan.outputs.matrix != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: ${{ fromJson(needs.plan.outputs.matrix) }}
+    name: shard-${{ matrix.chunk.id }}
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Sync images from image.txt to ACR
-      env:
-        ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
-        ACR_NAMESPACE: kkun
-      run: |
-        set -euo pipefail
-        sudo apt-get update
-        sudo apt-get install -y skopeo
+      - name: Login to Alibaba Cloud Container Registry
+        env:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "$password" | docker login --username="$username" --password-stdin registry.cn-hangzhou.aliyuncs.com
 
-        if [ ! -f image.txt ]; then
-          echo "image.txt not found in repo root"
-          exit 1
-        fi
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo jq
 
-        failed=0
-        while IFS= read -r raw || [ -n "$raw" ]; do
-          line="${raw%%#*}"
-          line="$(echo "$line" | xargs)"
-          [ -z "$line" ] && continue
-
-          src="$(echo "$line" | awk '{print $1}')"
-          dest_name="$(echo "$line" | awk '{print $2}')"
-          if [ -z "$dest_name" ]; then
-            dest_name="${src##*/}"
+      - name: Sync shard ${{ matrix.chunk.id }}
+        env:
+          ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
+          ACR_NAMESPACE: kkun
+        run: |
+          set -euo pipefail
+          failed=0
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            if ! bash scripts/sync-one.sh "$line"; then
+              failed=1
+            fi
+          done <<EOF
+          ${{ join(matrix.chunk.images, '
+') }}
+          EOF
+          if [ "$failed" -ne 0 ]; then
+            echo "shard ${{ matrix.chunk.id }} had failures"
+            exit 1
           fi
-
-          dst="${ACR_REGISTRY}/${ACR_NAMESPACE}/${dest_name}"
-          echo "==== ${src} -> ${dst} ===="
-          if ! skopeo copy \
-            --override-os linux \
-            --override-arch amd64 \
-            "docker://${src}" \
-            "docker://${dst}"; then
-            echo "FAILED: ${src}"
-            failed=1
-          fi
-        done < image.txt
-
-        if [ "$failed" -ne 0 ]; then
-          echo "Some images failed to sync"
-          exit 1
-        fi

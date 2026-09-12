@@ -4,31 +4,42 @@
 
 ## image.txt 放哪里
 
-放在**仓库根目录**：
-
-```
-Sync-Images-to-ali-Example/
-  image.txt
-  README.md
-  .github/workflows/learn-github-actions.yml
-```
-
-路径就是 `image.txt`，不要放到 `.github/` 里。
-
-格式：一行一个源镜像。`#` 开头是注释。可选第二列指定 ACR 仓库名。
+仓库根目录 `image.txt`，不要放到 `.github/`。
 
 ```
 linuxserver/chromium
 nginx:latest
 ghcr.io/anduin2017/how-to-cook how-to-cook
+python:3.9-slim
 ```
 
-默认目标：
-`registry.cn-hangzhou.aliyuncs.com/kkun/<源镜像最后一段>`
+默认目标：`registry.cn-hangzhou.aliyuncs.com/kkun/<最后一段>`。
+第二列可改 ACR 仓库名（可带 tag）。
+
+## 已实现能力
+
+### 1. 增量
+
+先 `skopeo inspect` 对比源和目标 **linux/amd64 digest**。相同则跳过，不重复推。
+
+### 2. 矩阵拆批
+
+`plan` job 按每 8 条切 shard，多个 runner 并行。单个镜像失败不会取消其它 shard（`fail-fast: false`）。
+
+### 3. 保留旧 tag
+
+`skopeo copy` **不会删除** 仓库里其它 tag。另外当工作 tag（如 `latest`）内容变了，覆盖前会再打两个保留 tag：
+
+- `仓库:<旧digest前12位>`  例如 `nginx:a1b2c3d4e5f6`
+- `仓库:prev-<原tag>-UTC时间`  例如 `nginx:prev-latest-20260912-140105`
+
+因此：
+
+- `python:3.9-slim` 一直在，不会因为同步了别的 python tag 被删
+- `nginx:latest` 更新后，上一版 latest 仍能用上面两个保留 tag 拉到
+
+个人版 ACR 不会自动清历史 tag；真正删除只能去控制台手动删。
 
 ## 触发
 
-改 `image.txt` 后 push 到 `main`，或在 Actions 里手动 Run workflow。
-
-只同步 `linux/amd64`，避免个人版 ACR 拒绝 OCI attestation
-(`application/vnd.oci.empty.v1+json`)。
+只在 `image.txt` / 脚本 / workflow 变更，或 Actions 里手动 Run。
