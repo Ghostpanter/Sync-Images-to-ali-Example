@@ -1,0 +1,39 @@
+# 一行一个源镜像。空行和 # 开头忽略。
+# 可选第二列指定 ACR 仓库名（不含 registry/namespace）。
+# 默认把源镜像最后一段（含 tag）作为目标名。
+# 例: linuxserver/chromium chromium
+# 例: nginx:latest
+
+guovern/tv-requests
+jxxghp/moviepilot-v2
+herberthe0229/iptv-sources
+alpine
+nginx:latest
+whyour/qinglong
+grafana/grafana
+grafana/loki
+quay.io/prometheus/prometheus
+corentinth/it-tools
+sitoi/dailycheckin
+hanxi/xiaomusic
+cp0204/quark-auto-save
+ht944/rabbitpro
+mysql
+esanchezm/prometheus-qbittorrent-exporter
+linuxserver/chromium
+anmour/bncr
+initialencounter/llonebot
+koishijs/koishi
+linuxserver/msedge
+python:3.9-slim
+leishi1313/downloader-exporter
+ghostchu/peerbanhelper
+debian:bullseye-slim
+rustdesk/rustdesk-server
+budtmo/docker-android:emulator_14.0
+ghcr.io/anduin2017/how-to-cook
+debian:stable-slim
+qmmusic/qm-music
+ghcr.io/jarvis2f/telegram-files:latest
+linuxserver/telegram:6.8.2
+didstopia/7dtd-server

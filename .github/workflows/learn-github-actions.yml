@@ -1,81 +1,66 @@
-# 1.首先，在workflow文件中定义触发器，例如每次推送到主分支时触发同步操作。
-# 工作流名称
 name: Sync-Images-to-ali-Example
-# 工作流运行时显示名称
 run-name: ${{ github.actor }} is Sync Images to ali.
-# 怎样触发工作流
+
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
- 
- 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
- 
- 
-# 2.添加一个job来执行同步操作。在workflow文件中，添加一个job 并指定使用的操作系统环境。
-# 工作流程任务（通常含有一个或多个步骤）
+
 jobs:
   syncimages:
     runs-on: ubuntu-latest
-    # 在job中添加步骤来执行同步操作。在上述job中，添加步骤来执行skopeo命令，从registry.k8s.io仓库拉取镜像，并将其推送到阿里云仓库。
     steps:
     - name: Checkout Repos
-      uses: actions/checkout@v3
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2.9.1
-    # 登录到阿里云镜像仓库  
-    - name: Login to Alibaba Cloud Container Registry  
-      env:  
-        username: ${{ secrets.DOCKER_USERNAME }}  
+      uses: actions/checkout@v4
+
+    - name: Login to Alibaba Cloud Container Registry
+      env:
+        username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-# 在GitHub仓库的Secrets中设置这个密码  
-      run: |  
-        echo "$password" | docker login --username="$username" --password-stdin registry.cn-hangzhou.aliyuncs.com
-    
-    # 使用shell命令批量同步所需的镜像到阿里云镜像仓库中
-    - name: Use Skopeo Tools Sync Image to ali
       run: |
-        #!/usr/bin/env bash
-        REPO_URL="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_22.04"
-        #sudo sh -c "echo 'deb ${REPO_URL}/ /' > /etc/apt/sources.list.d/skopeo.list"
-        #curl -fsSL ${REPO_URL}/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/skopeo.gpg > /dev/null
-        
-        sudo apt update
-        sudo apt install skopeo -y
-        skopeo copy --all docker://guovern/tv-requests docker://registry.cn-hangzhou.aliyuncs.com/kkun/tv-requests
-        skopeo copy --all docker://jxxghp/moviepilot-v2 docker://registry.cn-hangzhou.aliyuncs.com/kkun/moviepilot-v2
-        skopeo copy --all docker://herberthe0229/iptv-sources docker://registry.cn-hangzhou.aliyuncs.com/kkun/iptv-sources
-        skopeo copy --all docker://alpine docker://registry.cn-hangzhou.aliyuncs.com/kkun/alpine
-        skopeo copy --all docker://nginx:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/nginx:latest
-        skopeo copy --all docker://whyour/qinglong docker://registry.cn-hangzhou.aliyuncs.com/kkun/qinglong
-        skopeo copy --all docker://grafana/grafana docker://registry.cn-hangzhou.aliyuncs.com/kkun/grafana
-        skopeo copy --all docker://grafana/loki docker://registry.cn-hangzhou.aliyuncs.com/kkun/loki
-        skopeo copy --all docker://quay.io/prometheus/prometheus docker://registry.cn-hangzhou.aliyuncs.com/kkun/prometheus
-        skopeo copy --all docker://corentinth/it-tools docker://registry.cn-hangzhou.aliyuncs.com/kkun/it-tools
-        skopeo copy --all docker://sitoi/dailycheckin docker://registry.cn-hangzhou.aliyuncs.com/kkun/dailycheckin
-        skopeo copy --all docker://hanxi/xiaomusic docker://registry.cn-hangzhou.aliyuncs.com/kkun/xiaomusic
-        skopeo copy --all docker://cp0204/quark-auto-save docker://registry.cn-hangzhou.aliyuncs.com/kkun/quark-auto-save
-        skopeo copy --all docker://ht944/rabbitpro docker://registry.cn-hangzhou.aliyuncs.com/kkun/rabbitpro
-        skopeo copy --all docker://mysql docker://registry.cn-hangzhou.aliyuncs.com/kkun/mysql
-        skopeo copy --all docker://esanchezm/prometheus-qbittorrent-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/prometheus-qbittorrent-exporter
-        skopeo copy --all docker://linuxserver/chromium docker://registry.cn-hangzhou.aliyuncs.com/kkun/chromium
-        skopeo copy --all docker://anmour/bncr docker://registry.cn-hangzhou.aliyuncs.com/kkun/bncr
-        skopeo copy --all docker://initialencounter/llonebot docker://registry.cn-hangzhou.aliyuncs.com/kkun/llonebot
-        skopeo copy --all docker://koishijs/koishi docker://registry.cn-hangzhou.aliyuncs.com/kkun/koishi
-        skopeo copy --all docker://linuxserver/msedge docker://registry.cn-hangzhou.aliyuncs.com/kkun/msedge
-        skopeo copy --all docker://python:3.9-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/python:3.9-slim
-        skopeo copy --all docker://leishi1313/downloader-exporter docker://registry.cn-hangzhou.aliyuncs.com/kkun/downloader-exporter
-        skopeo copy --all docker://ghostchu/peerbanhelper docker://registry.cn-hangzhou.aliyuncs.com/kkun/peerbanhelper
-        skopeo copy --all docker://debian:bullseye-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/debian:bullseye-slim
-        skopeo copy --all docker://rustdesk/rustdesk-server docker://registry.cn-hangzhou.aliyuncs.com/kkun/rustdesk-server
-        skopeo copy --all docker://budtmo/docker-android:emulator_14.0 docker://registry.cn-hangzhou.aliyuncs.com/kkun/docker-android:emulator_14.0
-        skopeo copy --all docker://ghcr.io/anduin2017/how-to-cook docker://registry.cn-hangzhou.aliyuncs.com/kkun/how-to-cook
-        skopeo copy --all docker://debian:stable-slim docker://registry.cn-hangzhou.aliyuncs.com/kkun/debian:stable-slim
-        skopeo copy --all docker://qmmusic/qm-music docker://registry.cn-hangzhou.aliyuncs.com/kkun/qm-music
-        skopeo copy --all docker://ghcr.io/jarvis2f/telegram-files:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/telegram-files:latest
-        skopeo copy --all docker://linuxserver/telegram:6.8.2 docker://registry.cn-hangzhou.aliyuncs.com/kkun/telegram:6.8.2
-        skopeo copy --all docker://didstopia/7dtd-server docker://registry.cn-hangzhou.aliyuncs.com/kkun/7dtd-server
+        echo "$password" | docker login --username="$username" --password-stdin registry.cn-hangzhou.aliyuncs.com
+
+    - name: Sync images from image.txt to ACR
+      env:
+        ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
+        ACR_NAMESPACE: kkun
+      run: |
+        set -euo pipefail
+        sudo apt-get update
+        sudo apt-get install -y skopeo
+
+        if [ ! -f image.txt ]; then
+          echo "image.txt not found in repo root"
+          exit 1
+        fi
+
+        failed=0
+        while IFS= read -r raw || [ -n "$raw" ]; do
+          line="${raw%%#*}"
+          line="$(echo "$line" | xargs)"
+          [ -z "$line" ] && continue
+
+          src="$(echo "$line" | awk '{print $1}')"
+          dest_name="$(echo "$line" | awk '{print $2}')"
+          if [ -z "$dest_name" ]; then
+            dest_name="${src##*/}"
+          fi
+
+          dst="${ACR_REGISTRY}/${ACR_NAMESPACE}/${dest_name}"
+          echo "==== ${src} -> ${dst} ===="
+          if ! skopeo copy \
+            --override-os linux \
+            --override-arch amd64 \
+            "docker://${src}" \
+            "docker://${dst}"; then
+            echo "FAILED: ${src}"
+            failed=1
+          fi
+        done < image.txt
+
+        if [ "$failed" -ne 0 ]; then
+          echo "Some images failed to sync"
+          exit 1
+        fi
