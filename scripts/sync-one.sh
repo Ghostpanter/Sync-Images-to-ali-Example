@@ -1,11 +1,4 @@
 #!/usr/bin/env bash
-# Example:
-#   nginx:latest  already on ACR as digest of 1.21
-#   source latest now points to 1.22
-# Result on ACR:
-#   kkun/nginx:latest  -> 1.22
-#   kkun/nginx:1.22    -> 1.22
-#   kkun/nginx:1.21    -> previous latest (kept)
 set -euo pipefail
 
 ACR_REGISTRY="${ACR_REGISTRY:-registry.cn-hangzhou.aliyuncs.com}"
@@ -44,8 +37,7 @@ digest_from_json() {
 }
 
 version_from_ref() {
-  local ref="$1"
-  local t="${ref##*:}"
+  local ref="$1" t="${ref##*:}"
   [[ "$ref" != *:* ]] && { echo ""; return; }
   case "$t" in
     latest|stable|main|master|dev|nightly|edge) echo "" ;;
@@ -54,18 +46,23 @@ version_from_ref() {
 }
 
 version_from_json() {
-  local json="$1"
-  echo "$json" | jq -r '
+  echo "$1" | jq -r '
     .Labels["org.opencontainers.image.version"]
     // .Labels.version
     // .Labels.VERSION
-    // .Labels["nginx.version"]
     // empty
-  ' | sed 's/^v//' 
+  ' | sed 's/^v//'
 }
 
 copy_img() {
-  skopeo copy --override-os "$OS" --override-arch "$ARCH" "docker://${1}" "docker://${2}"
+  skopeo copy --override-os "$OS" --override-arch "$ARCH" --retry-times 3 \
+    "docker://${1}" "docker://${2}"
+}
+
+# Same-registry retag is cheap: layers already in ACR.
+retag() {
+  skopeo copy --override-os "$OS" --override-arch "$ARCH" --retry-times 2 \
+    "docker://${1}" "docker://${2}"
 }
 
 src_json="$(inspect_json "$src")"
@@ -75,7 +72,6 @@ src_digest="$(digest_from_json "$src_json")"
 
 new_ver="$(version_from_ref "$src")"
 [ -z "$new_ver" ] && new_ver="$(version_from_json "$src_json")"
-# drop debian suffix noise like 1.27.3-bookworm -> keep full tag if from ref; labels often clean
 
 dst_json="$(inspect_json "$dest_ref")"
 dst_digest="$(digest_from_json "$dst_json")"
@@ -83,9 +79,10 @@ dst_digest="$(digest_from_json "$dst_json")"
 if [ -n "$dst_digest" ] && [ "$dst_digest" = "$src_digest" ]; then
   echo "SKIP same digest ${src_digest}"
   if [ -n "$new_ver" ] && [ "$new_ver" != "$dest_tag" ]; then
-    if [ "$(digest_from_json "$(inspect_json "${repo}:${new_ver}")")" != "$src_digest" ]; then
-      echo "TAG ${dest_ref} also as ${repo}:${new_ver}"
-      copy_img "$dest_ref" "${repo}:${new_ver}" || true
+    ver_digest="$(digest_from_json "$(inspect_json "${repo}:${new_ver}")")"
+    if [ "$ver_digest" != "$src_digest" ]; then
+      echo "TAG ${dest_ref} -> ${repo}:${new_ver}"
+      retag "$dest_ref" "${repo}:${new_ver}" || true
     fi
   fi
   exit 0
@@ -93,19 +90,18 @@ fi
 
 if [ -n "$dst_digest" ] && [ "$dst_digest" != "$src_digest" ]; then
   old_ver="$(version_from_json "$dst_json")"
-  [ -z "$old_ver" ] && old_ver="$(version_from_ref "$dest_ref")"
   if [ -z "$old_ver" ] || [ "$old_ver" = "$dest_tag" ] || [ "$old_ver" = "latest" ]; then
     short="${dst_digest#sha256:}"
     old_ver="prev-${dest_tag}-${short:0:12}"
   fi
-  echo "KEEP old ${dest_ref} (${dst_digest}) as ${repo}:${old_ver}"
-  copy_img "$dest_ref" "${repo}:${old_ver}" || true
+  echo "KEEP ${dest_ref} as ${repo}:${old_ver}"
+  retag "$dest_ref" "${repo}:${old_ver}" || true
 fi
 
 copy_img "$src" "$dest_ref"
 echo "OK ${src_digest} -> ${dest_ref}"
 
 if [ -n "$new_ver" ] && [ "$new_ver" != "$dest_tag" ]; then
-  echo "TAG new image also as ${repo}:${new_ver}"
-  copy_img "$dest_ref" "${repo}:${new_ver}" || true
+  echo "TAG ${dest_ref} -> ${repo}:${new_ver}"
+  retag "$dest_ref" "${repo}:${new_ver}" || true
 fi

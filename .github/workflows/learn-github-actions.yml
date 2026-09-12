@@ -1,85 +1,82 @@
 name: Sync-Images-to-ali-Example
 run-name: ${{ github.actor }} is Sync Images to ali.
 
+concurrency:
+  group: acr-sync-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [ "main" ]
     paths:
       - image.txt
       - .github/workflows/learn-github-actions.yml
-      - scripts/sync-one.sh
+      - scripts/**
   workflow_dispatch:
+    inputs:
+      shard_count:
+        description: "Parallel shards"
+        default: "3"
+        required: false
+      jobs_per_shard:
+        description: "Concurrent copies inside one shard"
+        default: "3"
+        required: false
 
 jobs:
   plan:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.split.outputs.matrix }}
+      shards: ${{ steps.split.outputs.shards }}
     steps:
       - uses: actions/checkout@v4
       - id: split
         env:
-          CHUNK_SIZE: "8"
+          SHARD_COUNT: ${{ github.event.inputs.shard_count || '3' }}
         run: |
           python3 <<'PY'
           import json, os, pathlib
-          lines = []
+          n = 0
           for raw in pathlib.Path("image.txt").read_text(encoding="utf-8").splitlines():
-              line = raw.split("#", 1)[0].strip()
-              if line:
-                  lines.append(line)
-          size = int(os.environ.get("CHUNK_SIZE", "8"))
-          chunks = [lines[i:i + size] for i in range(0, len(lines), size)] or [[]]
-          print(f"images={len(lines)} chunks={len(chunks)} size={size}")
-          matrix = [{"id": i, "images": c} for i, c in enumerate(chunks)]
-          out = os.environ["GITHUB_OUTPUT"]
-          with open(out, "a", encoding="utf-8") as f:
-              f.write("matrix=")
-              f.write(json.dumps(matrix, ensure_ascii=False))
-              f.write("\n")
+              if raw.split("#", 1)[0].strip():
+                  n += 1
+          count = max(1, min(int(os.environ.get("SHARD_COUNT", "3")), n or 1))
+          shards = list(range(count))
+          print(f"images={n} shards={count}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write("shards=" + json.dumps(shards) + "\n")
           PY
 
-  syncimages:
+  sync:
     needs: plan
-    if: ${{ needs.plan.outputs.matrix != '[]' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     strategy:
       fail-fast: false
+      max-parallel: 4
       matrix:
-        chunk: ${{ fromJson(needs.plan.outputs.matrix) }}
-    name: shard-${{ matrix.chunk.id }}
+        shard: ${{ fromJson(needs.plan.outputs.shards) }}
+    name: shard-${{ matrix.shard }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Login to Alibaba Cloud Container Registry
-        env:
+      - uses: docker/login-action@v3
+        with:
+          registry: registry.cn-hangzhou.aliyuncs.com
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          echo "$password" | docker login --username="$username" --password-stdin registry.cn-hangzhou.aliyuncs.com
 
       - name: Install skopeo
         run: |
-          sudo apt-get update
-          sudo apt-get install -y skopeo jq
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq skopeo jq
+          skopeo --version
 
-      - name: Sync shard ${{ matrix.chunk.id }}
+      - name: Sync shard ${{ matrix.shard }}
         env:
           ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
           ACR_NAMESPACE: kkun
-        run: |
-          set -euo pipefail
-          failed=0
-          while IFS= read -r line; do
-            [ -z "$line" ] && continue
-            if ! bash scripts/sync-one.sh "$line"; then
-              failed=1
-            fi
-          done <<EOF
-          ${{ join(matrix.chunk.images, '
-') }}
-          EOF
-          if [ "$failed" -ne 0 ]; then
-            echo "shard ${{ matrix.chunk.id }} had failures"
-            exit 1
-          fi
+          SHARD_ID: ${{ matrix.shard }}
+          SHARD_COUNT: ${{ github.event.inputs.shard_count || '3' }}
+          PARALLEL: ${{ github.event.inputs.jobs_per_shard || '3' }}
+        run: bash scripts/sync-all.sh
