@@ -52,7 +52,6 @@ jobs:
         skopeo copy --all docker://alpine docker://registry.cn-hangzhou.aliyuncs.com/kkun/alpine
         skopeo copy --all docker://nginx:latest docker://registry.cn-hangzhou.aliyuncs.com/kkun/nginx:latest
         skopeo copy --all docker://whyour/qinglong docker://registry.cn-hangzhou.aliyuncs.com/kkun/qinglong
-        skopeo copy --all docker://xhofe/alist docker://registry.cn-hangzhou.aliyuncs.com/kkun/alist
         skopeo copy --all docker://grafana/grafana docker://registry.cn-hangzhou.aliyuncs.com/kkun/grafana
         skopeo copy --all docker://grafana/loki docker://registry.cn-hangzhou.aliyuncs.com/kkun/loki
         skopeo copy --all docker://quay.io/prometheus/prometheus docker://registry.cn-hangzhou.aliyuncs.com/kkun/prometheus
